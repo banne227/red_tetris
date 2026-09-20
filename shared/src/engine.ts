@@ -74,7 +74,7 @@ function clearLines(board: Board): { board: Board; linesCleared: number } {
     let linesCleared = 0;
 
     for (let row = board.length - 1; row >= 0; row--) {
-        if (new_board[row].every(cell => cell !== 0)) {
+        if (new_board[row].every(cell => cell !== 0 && cell !== 'X')) {
             new_board.splice(row, 1); // Remove the filled line
             new_board.unshift(Array(new_board[0].length).fill(0)); // Add a new empty line at the top
             row++; // Check the same row again since it has new content

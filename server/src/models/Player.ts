@@ -1,4 +1,4 @@
-import { clearLines, mergePieceToBoard } from "../../../shared/src/engine";
+import { addPenalityLines, clearLines, mergePieceToBoard, addPenalityLines as penalty} from "../../../shared/src/engine";
 import { Board } from "../../../shared/src/types";
 import { Piece } from "./Piece";
 import { init_board } from "../../../shared/src/board";
@@ -16,11 +16,7 @@ class Player {
         this.id = id;
         this.name = name;
         this.currentPiece = currentPiece;
-        if (board) {
-            this.board = board;
-        } else {
-            this.board = init_board();
-        }
+        this.board = board || init_board();
         this.sequenceIndex = 0;
     }
 
@@ -28,16 +24,12 @@ class Player {
         return this.id;
     }
 
-    getName (): string {
-        return this.name;
-    }
-
     getBoard(): Board {
         return this.board;
     }
 
-    getCurrentPiece(): Piece | null {
-        return this.currentPiece;
+    updateCurrentPiece(newPiece: Piece | null): void {
+        this.currentPiece = newPiece;
     }
 
     getScore(): number {
@@ -52,6 +44,14 @@ class Player {
         return this.game_over;
     }
 
+    getIndex(): number {
+        return this.sequenceIndex;
+    }
+
+    incrementIndex(): void {
+        this.sequenceIndex++;
+    }
+
     lockActivePiece(): number {
         const activePiece = this.currentPiece?.getCurrentState();
         if (!activePiece) {
@@ -62,6 +62,12 @@ class Player {
         this.board = board;
         this.score += linesCleared * 100;
         return linesCleared;
+    }
+
+    addPenalityLines(lines: number): Board {
+        const new_board = penalty(this.board, lines);
+        this.board = new_board;
+        return new_board;
     }
 }
 
