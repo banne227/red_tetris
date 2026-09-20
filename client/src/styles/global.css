@@ -1,0 +1,41 @@
+/* TODO (tâche coéquipier) : thème visuel du jeu — couleurs des tetriminos
+   (classes .piece-I, .piece-O, .piece-T, .piece-S, .piece-Z, .piece-J,
+   .piece-L), style du board (.board-grid, .board-row, .board-cell),
+   du spectre adverse (.opponent-spectrum-col), responsive, etc.
+   Reset minimal ci-dessous pour que la structure grid/flexbox fonctionne
+   dès maintenant. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+
+.board-grid {
+  display: flex;
+  flex-direction: column;
+}
+
+.board-row {
+  display: flex;
+}
+
+.board-cell {
+  width: 24px;
+  height: 24px;
+  border: 1px solid #222;
+}
+
+.opponent-spectrum {
+  display: flex;
+  align-items: flex-end;
+  height: 60px;
+}
+
+.opponent-spectrum-col {
+  flex: 1;
+  background: #888;
+}

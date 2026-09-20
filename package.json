@@ -1,0 +1,17 @@
+{
+  "name": "red-tetris",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "shared",
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev -w server",
+    "dev:client": "npm run dev -w client",
+    "build": "npm run build -w shared && npm run build -w server && npm run build -w client",
+    "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
+    "coverage": "npm run coverage -w shared && npm run coverage -w server && npm run coverage -w client"
+  }
+}
