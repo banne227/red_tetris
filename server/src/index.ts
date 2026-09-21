@@ -1,6 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import path from "path";
 import { Game } from "./models/Game";
 import { Player } from "./models/Player";
 import { computeSpectrum } from "../../shared/src/board";
@@ -106,3 +107,12 @@ io.on("connection", (socket) => {
 }
 );
 
+
+
+const clientDistPath = path.join(__dirname, "../../client/dist");
+
+app.use(express.static(clientDistPath));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(clientDistPath, "index.html"));
+});
