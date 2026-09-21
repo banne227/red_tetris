@@ -1,5 +1,5 @@
 import { PieceType } from "../../../shared/src/types";
-import { Player, getIndex, incrementIndex } from "./Player";
+import { Player, incrementIndex } from "./Player";
 import { Piece } from "./Piece";
 import { init_board, generateBag } from "../../../shared/src/board";
 
@@ -16,6 +16,14 @@ class Game {
         this.roomId = roomId;
         this.winner = null;
         this.sequence = generateBag();
+    }
+
+    getPlayers(): Player[] {
+        return this.players;
+    }
+
+    getWinner(): Player | null {
+        return this.winner;
     }
 
     getPieceAt(index:number): PieceType {
@@ -78,4 +86,15 @@ class Game {
         }
         return false;
     }
+
+    getNextPiece(player: Player): boolean {
+        const index = player.getIndex()
+        const newPieceType = this.getPieceAt(index)
+
+        player.updateCurrentPiece(new Piece(newPieceType, { row: 0, col: 4 }, 0));
+        player.incrementIndex();
+        return true;
+    }
 }
+
+export { Game };

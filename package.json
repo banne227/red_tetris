@@ -13,5 +13,12 @@
     "build": "npm run build -w shared && npm run build -w server && npm run build -w client",
     "test": "npm run test -w shared && npm run test -w server && npm run test -w client",
     "coverage": "npm run coverage -w shared && npm run coverage -w server && npm run coverage -w client"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  },
+  "dependencies": {
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1"
   }
 }

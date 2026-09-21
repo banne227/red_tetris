@@ -23,13 +23,13 @@ function init_board(): Board {
     return board;
 }
 
-    function generateBag(): PieceType[] {
-        const pieceTypes: PieceType[] = ["I", "O", "T", "S", "Z", "J", "L"];
-        for (let i = pieceTypes.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [pieceTypes[i], pieceTypes[j]] = [pieceTypes[j], pieceTypes[i]];
-        }
-        return pieceTypes;
+function generateBag(): PieceType[] {
+    const pieceTypes: PieceType[] = ["I", "O", "T", "S", "Z", "J", "L"];
+    for (let i = pieceTypes.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pieceTypes[i], pieceTypes[j]] = [pieceTypes[j], pieceTypes[i]];
     }
+    return pieceTypes;
+}
 
 export { init_board, computeSpectrum, generateBag };

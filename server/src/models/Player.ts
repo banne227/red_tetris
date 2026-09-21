@@ -24,6 +24,10 @@ class Player {
         return this.id;
     }
 
+    getCurrentPiece(): Piece | null {
+        return this.currentPiece;
+    }
+
     getBoard(): Board {
         return this.board;
     }
@@ -61,6 +65,7 @@ class Player {
         const { board, linesCleared } = clearLines(new_board);
         this.board = board;
         this.score += linesCleared * 100;
+        this.sequenceIndex++;
         return linesCleared;
     }
 
@@ -68,6 +73,20 @@ class Player {
         const new_board = penalty(this.board, lines);
         this.board = new_board;
         return new_board;
+    }
+
+    movePiece(dir: "right" | "left" | "down"): boolean {
+        const piece = this.currentPiece;
+        if (piece) {
+            return piece.move(this.getBoard(), dir)
+        }
+        return false
+    }
+
+    rotatePiece(): boolean {
+        const piece = this.currentPiece;
+        if (piece) return piece.rotate(this.getBoard())
+        return false
     }
 }
 
