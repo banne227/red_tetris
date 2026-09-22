@@ -19,7 +19,7 @@ let rooms: Map<string, Game> = new Map();
 function onPieceLocked(socket: any, game: Game, player: Player, roomId: string) {
     const linesCleared = player.lockActivePiece()
     if (linesCleared > 1) game.applyPenalty(player, linesCleared - 1)
-    socket?.to(roomId).emit("spectrum", computeSpectrum(player.getBoard()))
+    socket?.to(roomId).emit("spectrum", socket.id, computeSpectrum(player.getBoard()))
     game.getNextPiece(player)
 }
 
