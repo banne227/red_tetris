@@ -21,6 +21,9 @@ class Player {
     getId() {
         return this.id;
     }
+    getName() {
+        return this.name;
+    }
     getCurrentPiece() {
         return this.currentPiece;
     }

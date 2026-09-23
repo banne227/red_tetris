@@ -11,29 +11,58 @@ export default function GamePage() {
 
   const status = useSelector((state: RootState) => state.game.status);
   const board = useSelector((state: RootState) => state.game.board);
+  const currentPiece = useSelector((state: RootState) => state.game.currentPiece);
   const opponents = useSelector((state: RootState) => state.game.opponents);
   const players = useSelector((state: RootState) => state.game.players);
   const score = useSelector((state: RootState) => state.game.score);
-  const currentPiece = useSelector((state: RootState) => state.game.currentPiece);
   const eliminated = useSelector((state: RootState) => state.game.eliminated);
   const winnerId = useSelector((state: RootState) => state.game.winnerId);
 
-  if (!board) {
+  function handleStart() {
+    startGame();
+  }
+
+  // Écran d'attente : avant que le premier "board" arrive du serveur.
+  if (status === "waiting" || !board) {
     return (
-      <main className="game-page game-page--loading">
-        <p>Connexion a la room {room}...</p>
-        {status === "waiting" && (
-          <button type="button" onClick={startGame}>
-            Demarrer la partie
+      <main className="waiting-page">
+        <div className="waiting-card">
+          <h1 className="waiting-room-name">{room}</h1>
+          <p className="waiting-subtitle">
+            Connecté en tant que <strong>{playerName}</strong>
+          </p>
+
+          <div className="waiting-players">
+            <p className="waiting-players-title">
+              Joueurs dans la room ({players.length})
+            </p>
+            <ul className="waiting-players-list">
+              {players.map((p) => (
+                <li key={p.id} className="waiting-player-item">
+                  <span className="waiting-player-dot" />
+                  {p.name}
+                </li>
+              ))}
+              {players.length === 0 && (
+                <li className="waiting-player-item waiting-player-item--muted">
+                  En attente de connexion...
+                </li>
+              )}
+            </ul>
+          </div>
+
+          <button className="waiting-start-btn" onClick={handleStart}>
+            Lancer la partie
           </button>
-        )}
+          <p className="waiting-hint">N'importe quel joueur de la room peut démarrer.</p>
+        </div>
       </main>
     );
   }
 
   const isFinished = status === "finished";
-  const winPlayer = players.find((p) => p.id === winnerId);
-  const winnerName =  winPlayer ? winPlayer.name : null;
+  const winnerName =
+    winnerId === null ? null : players.find((p) => p.id === winnerId)?.name ?? winnerId;
 
   return (
     <main className="game-page">
@@ -51,7 +80,7 @@ export default function GamePage() {
 
       {isFinished && (
         <p className="game-banner game-banner--finished">
-          Partie terminée — { winnerName === playerName ? "Tu as gagné !" : winnerName ? `${winnerName} a gagné !` : "aucun gagnant."}
+          Partie terminée — {winnerName ? `${winnerName} a gagné !` : "aucun gagnant."}
         </p>
       )}
 

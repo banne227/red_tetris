@@ -71,6 +71,11 @@ io.on("connection", (socket) => {
             socket.emit("error", "Game already started");
             return;
         }
+        const existingPlayers = game.getPlayers();
+        for (const existingPlayer of existingPlayers) {
+            socket.emit("playerJoined", existingPlayer.getId(), existingPlayer.getName());
+            socket.emit("spectrum", existingPlayer.getId(), (0, shared_1.computeSpectrum)(existingPlayer.getBoard()));
+        }
         const player = new Player_1.Player(socket.id, playerName, null, null);
         game.addPlayer(player);
         socket.join(roomId);
