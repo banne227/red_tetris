@@ -16,12 +16,25 @@ function checkCollision(board, piece) {
     }
     return false; // No collision detected
 }
+function dropPiece(board, piece) {
+    let newPosition = { ...piece.position };
+    while (true) {
+        newPosition.row += 1;
+        let newPiece = { ...piece, position: newPosition };
+        if (checkCollision(board, newPiece)) {
+            break; // Stop if collision detected
+        }
+    }
+    return { ...piece, position: { row: newPosition.row - 1, col: newPosition.col } }; // Return the last valid position
+}
 function movePiece(board, piece, movement) {
     let newPosition = { ...piece.position };
     if (movement === "right")
         newPosition.col += 1;
     else if (movement === "left")
         newPosition.col -= 1;
+    else if (movement === "drop")
+        return dropPiece(board, piece);
     else if (movement === "down")
         newPosition.row += 1;
     let newPiece = { ...piece, position: newPosition };

@@ -1,6 +1,6 @@
 import { Board, Piece } from './types';
 declare function checkCollision(board: Board, piece: Piece): boolean;
-declare function movePiece(board: Board, piece: Piece, movement: "right" | "left" | "down"): {
+declare function movePiece(board: Board, piece: Piece, movement: "right" | "left" | "down" | "drop"): {
     position: {
         row: number;
         col: number;
@@ -13,7 +13,7 @@ declare function rotatePiece(board: Board, piece: Piece): {
     position: import("./types").Position;
     rotation: number;
 } | null;
-declare function mergePieceToBoard(board: Board, piece: Piece): (0 | import("./types").PieceType)[][];
+declare function mergePieceToBoard(board: Board, piece: Piece): (0 | import("./types").PieceType | "X")[][];
 declare function clearLines(board: Board): {
     board: Board;
     linesCleared: number;

@@ -19,6 +19,9 @@ function handleKey(event: KeyboardEvent, socketRef: React.MutableRefObject<Socke
     if (event.key === "ArrowUp") {
         socketRef.current?.emit("rotate", roomName);
     }
+    if (event.key === " ") {
+        socketRef.current?.emit("move", roomName, "drop");
+    }
 }
 
 export function useGameSocket(roomName: string, playerName: string) {

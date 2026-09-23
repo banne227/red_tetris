@@ -11,6 +11,7 @@ class Player {
     score = 0;
     sequenceIndex;
     game_over = false;
+    leader = false;
     constructor(id, name, board, currentPiece) {
         this.id = id;
         this.name = name;
@@ -30,6 +31,12 @@ class Player {
     getBoard() {
         return this.board;
     }
+    isLeader() {
+        return this.leader;
+    }
+    setLeader(isLeader) {
+        this.leader = isLeader;
+    }
     updateCurrentPiece(newPiece) {
         this.currentPiece = newPiece;
     }
@@ -37,7 +44,7 @@ class Player {
         return this.score;
     }
     updateBoard(new_board) {
-        this.board = new_board;
+        this.board = new_board || (0, shared_2.init_board)();
     }
     isGameOver() {
         return this.game_over;
@@ -47,6 +54,13 @@ class Player {
     }
     setGameOver() {
         this.game_over = true;
+    }
+    rematch() {
+        this.board = (0, shared_2.init_board)();
+        this.currentPiece = null;
+        this.score = 0;
+        this.sequenceIndex = 0;
+        this.game_over = false;
     }
     incrementIndex() {
         this.sequenceIndex++;

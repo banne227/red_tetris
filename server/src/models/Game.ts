@@ -65,6 +65,18 @@ class Game {
 
     addPlayer(player: Player): void {
         this.players.push(player);
+        if (this.players.length === 1) {
+            player.setLeader(true);
+        }
+    }
+
+    rematch() {
+        this.states = "waiting";
+        this.winner = null;
+        this.sequence = generateBag();
+        for (const player of this.players) {
+            player.rematch();
+        }
     }
 
     removePlayer(playerId: string): void {

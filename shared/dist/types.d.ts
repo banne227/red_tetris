@@ -1,5 +1,5 @@
 type PieceType = "I" | "O" | "T" | "S" | "Z" | "J" | "L";
-type CellValue = 0 | PieceType;
+type CellValue = 0 | PieceType | "X";
 type Board = CellValue[][];
 type Position = {
     row: number;

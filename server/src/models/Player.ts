@@ -10,6 +10,7 @@ class Player {
     private score: number = 0;
     private sequenceIndex: number;
     private game_over: boolean = false;
+    private leader: boolean = false;
 
     constructor(id: string, name: string, board: Board | null, currentPiece: Piece | null) {
         this.id = id;
@@ -35,6 +36,14 @@ class Player {
         return this.board;
     }
 
+    isLeader(): boolean {
+        return this.leader;
+    }
+
+    setLeader(isLeader: boolean): void {
+        this.leader = isLeader;
+    }
+
     updateCurrentPiece(newPiece: Piece | null): void {
         this.currentPiece = newPiece;
     }
@@ -43,8 +52,8 @@ class Player {
         return this.score;
     }
 
-    updateBoard(new_board: Board): void {
-        this.board = new_board;
+    updateBoard(new_board: Board | null): void {
+        this.board = new_board || init_board();
     }
 
     isGameOver(): boolean {
@@ -57,6 +66,14 @@ class Player {
 
     setGameOver(): void {
         this.game_over = true;
+    }
+
+    rematch(): void {
+        this.board = init_board();
+        this.currentPiece = null;
+        this.score = 0;
+        this.sequenceIndex = 0;
+        this.game_over = false;
     }
 
     incrementIndex(): void {
@@ -82,7 +99,7 @@ class Player {
         return new_board;
     }
 
-    movePiece(dir: "right" | "left" | "down"): boolean {
+    movePiece(dir: "right" | "left" | "down" | "drop"): boolean {
         const piece = this.currentPiece;
         if (piece) {
             return piece.move(this.getBoard(), dir)

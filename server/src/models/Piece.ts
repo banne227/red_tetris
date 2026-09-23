@@ -31,7 +31,7 @@ class Piece {
         };
     }
 
-    move(board: Board, direction: "right" | "left" | "down"): boolean {
+    move(board: Board, direction: "right" | "left" | "down" | "drop"): boolean {
         const newPiece = movePiece(board, this.getCurrentState(), direction);
         if (newPiece) {
             this.position = newPiece.position;

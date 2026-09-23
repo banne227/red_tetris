@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
         const game = rooms.get(roomId);
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
-        if (game && player && game.getState() === "waiting") {
+        if (game && player && game.getState() === "waiting" && player.isLeader()) {
             game.startGame();
             io.to(roomId).emit("gameStarted");
             for (const roomPlayer of game.getPlayers()) {
@@ -100,16 +100,20 @@ io.on("connection", (socket) => {
         }
     });
 
-    socket.on("move", (roomId:string, dir: "right" | "left" | "down") => {
+    socket.on("move", (roomId:string, dir: "right" | "left" | "down" | "drop") => {
         const game = rooms.get(roomId);
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
         if (!player) return
+        if (player.isGameOver() || game?.getState() !== "playing") return
         const result = player?.movePiece(dir)
 
         if (!result && dir == "down" && game) {
             onPieceLocked(socket, game, player, roomId)
         }
+        // if (!result && dir == "drop" && game) {
+        //     onPieceLocked(socket, game, player, roomId)
+        // }
         emitBoard(socket, player)
     })
 
@@ -118,8 +122,17 @@ io.on("connection", (socket) => {
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
         if (!player) return
-        
+        if (player.isGameOver() || game?.getState() !== "playing") return
         player.rotatePiece()
+        emitBoard(socket, player)
+    })
+
+    socket.on("rematch", (roomId:string) => {
+        const game = rooms.get(roomId);
+        const players = game?.getPlayers();
+        const player = players?.find(p => p.getId() === socket.id);
+        if (game?.getState() !== "finished" || !player) return
+        game?.rematch()
         emitBoard(socket, player)
     })
 }
