@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/components/board.tsx","./src/components/opponentlist.tsx","./src/hooks/usegamesocket.ts","./src/pages/gamepage.tsx","./src/pages/homepage.tsx","./src/store/gameslice.ts","./src/store/store.ts"],"version":"5.9.3"}

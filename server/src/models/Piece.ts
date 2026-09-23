@@ -1,5 +1,4 @@
-import {movePiece, rotatePiece} from "../../../shared/src/engine";
-import { PieceType, Board, Position } from "../../../shared/src/types";
+import { movePiece, rotatePiece, Board, PieceType, Position } from "@red-tetris/shared";
 
 class Piece {
     private type: PieceType;

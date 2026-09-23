@@ -1,74 +1,65 @@
-import { PieceType, generateBag, init_board } from "@red-tetris/shared";
-import { Player } from "./Player";
-import { Piece } from "./Piece";
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Game = void 0;
+const shared_1 = require("@red-tetris/shared");
+const Piece_1 = require("./Piece");
 class Game {
-    private players: Player[];
-    private states: "waiting" | "playing" | "finished";
-    private roomId: string;
-    private winner: Player | null;
-    private sequence: PieceType[];
-
-    constructor(players: Player[], roomId: string) {
+    players;
+    states;
+    roomId;
+    winner;
+    sequence;
+    constructor(players, roomId) {
         this.players = players;
         this.states = "waiting";
         this.roomId = roomId;
         this.winner = null;
-        this.sequence = generateBag();
+        this.sequence = (0, shared_1.generateBag)();
     }
-
-    getPlayers(): Player[] {
+    getPlayers() {
         return this.players;
     }
-
-    getWinner(): Player | null {
+    getWinner() {
         return this.winner;
     }
-
-    getPieceAt(index:number): PieceType {
+    getPieceAt(index) {
         if (index < 0) {
             throw new Error("Index cannot be negative");
         }
         while (index >= this.sequence.length) {
-            let new_sequence = this.sequence.concat(generateBag());
+            let new_sequence = this.sequence.concat((0, shared_1.generateBag)());
             this.sequence = new_sequence;
         }
         return this.sequence[index];
     }
-
-    assignPieceToPlayer(player: Player): void {
+    assignPieceToPlayer(player) {
         const type = this.getPieceAt(player.getIndex());
-        const piece = new Piece(type, { row: 0, col: 4 }, 0);
+        const piece = new Piece_1.Piece(type, { row: 0, col: 4 }, 0);
         player.updateCurrentPiece(piece);
-    } 
-    
+    }
     startGame() {
         this.states = "playing";
         for (const player of this.players) {
-            player.updateBoard(init_board());
+            player.updateBoard((0, shared_1.init_board)());
             this.assignPieceToPlayer(player);
             player.incrementIndex();
         }
     }
-
-    applyPenalty(exceptPlayer: Player, penaltyLines: number) {
+    applyPenalty(exceptPlayer, penaltyLines) {
         for (const player of this.players) {
             if (player.getId() !== exceptPlayer.getId()) {
                 player.addPenalityLines(penaltyLines);
             }
         }
     }
-
-    addPlayer(player: Player): void {
+    addPlayer(player) {
         this.players.push(player);
     }
-
-    removePlayer(playerId: string): void {
+    removePlayer(playerId) {
         this.players = this.players.filter(player => player.getId() !== playerId);
     }
-
-    checkGameOver(): boolean {
-        let player_alive = 0
+    checkGameOver() {
+        let player_alive = 0;
         for (const player of this.players) {
             if (!player.isGameOver()) {
                 player_alive++;
@@ -85,15 +76,12 @@ class Game {
         }
         return false;
     }
-
-    getNextPiece(player: Player): boolean {
-        const index = player.getIndex()
-        const newPieceType = this.getPieceAt(index)
-
-        player.updateCurrentPiece(new Piece(newPieceType, { row: 0, col: 4 }, 0));
+    getNextPiece(player) {
+        const index = player.getIndex();
+        const newPieceType = this.getPieceAt(index);
+        player.updateCurrentPiece(new Piece_1.Piece(newPieceType, { row: 0, col: 4 }, 0));
         player.incrementIndex();
         return true;
     }
 }
-
-export { Game };
+exports.Game = Game;

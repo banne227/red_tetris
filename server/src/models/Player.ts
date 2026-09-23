@@ -1,7 +1,6 @@
-import { addPenalityLines, clearLines, mergePieceToBoard, addPenalityLines as penalty} from "../../../shared/src/engine";
-import { Board } from "../../../shared/src/types";
+import { addPenalityLines as penalty, clearLines, mergePieceToBoard, Board } from "@red-tetris/shared";
 import { Piece } from "./Piece";
-import { init_board } from "../../../shared/src/board";
+import { init_board } from "@red-tetris/shared";
 
 class Player {
     private id: string;

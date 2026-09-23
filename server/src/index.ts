@@ -4,7 +4,7 @@ import { Server } from "socket.io";
 import path from "path";
 import { Game } from "./models/Game";
 import { Player } from "./models/Player";
-import { computeSpectrum } from "../../shared/src/board";
+import { computeSpectrum } from "@red-tetris/shared";
 
 const app = express();
 const httpServer = createServer(app); // le serveur HTTP "brut" est construit à PARTIR de l'app Express
@@ -67,7 +67,7 @@ io.on("connection", (socket) => {
         const player = new Player(socket.id, playerName, null, null);
         game.addPlayer(player);
         socket.join(roomId);
-        socket.to(roomId).emit("playerJoined", playerName);
+        socket.to(roomId).emit("playerJoined", socket.id, playerName);
         console.log(`${playerName} joined room ${roomId}`);
     });
 
