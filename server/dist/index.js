@@ -36,13 +36,16 @@ function startGameLoop(game, roomId) {
             if (!result) {
                 onPieceLocked(socket, game, player, roomId);
             }
-            socket?.emit("board", player.getBoard(), player.getCurrentPiece()?.getCurrentState(), player.getScore());
+            socket?.emit("board", player.getBoard(), player.getCurrentPiece()?.getCurrentState(), player.getScore(), player.isGameOver());
         }
         if (game.checkGameOver()) {
             io.to(roomId).emit("gameOver", game.getWinner()?.getId());
             clearInterval(interval); // stop the interval when the game is over
         }
     }, timer);
+}
+function emitBoard(socket, player) {
+    socket.emit("board", player.getBoard(), player.getCurrentPiece()?.getCurrentState(), player.getScore(), player.isGameOver());
 }
 io.on("connection", (socket) => {
     console.log("A user connected");
@@ -62,6 +65,11 @@ io.on("connection", (socket) => {
         if (!game) {
             game = new Game_1.Game([], roomId);
             rooms.set(roomId, game);
+            console.log(`Room ${roomId} created`);
+        }
+        if (game.getState() !== "waiting") {
+            socket.emit("error", "Game already started");
+            return;
         }
         const player = new Player_1.Player(socket.id, playerName, null, null);
         game.addPlayer(player);
@@ -73,9 +81,14 @@ io.on("connection", (socket) => {
         const game = rooms.get(roomId);
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
-        if (game && player) {
+        if (game && player && game.getState() === "waiting") {
             game.startGame();
             io.to(roomId).emit("gameStarted");
+            for (const roomPlayer of game.getPlayers()) {
+                const roomSocket = io.sockets.sockets.get(roomPlayer.getId());
+                if (roomSocket)
+                    emitBoard(roomSocket, roomPlayer);
+            }
             startGameLoop(game, roomId);
         }
     });
@@ -89,7 +102,7 @@ io.on("connection", (socket) => {
         if (!result && dir == "down" && game) {
             onPieceLocked(socket, game, player, roomId);
         }
-        socket.emit("board", player.getBoard(), player.getCurrentPiece()?.getCurrentState(), player.getScore());
+        emitBoard(socket, player);
     });
     socket.on("rotate", (roomId) => {
         const game = rooms.get(roomId);
@@ -98,7 +111,7 @@ io.on("connection", (socket) => {
         if (!player)
             return;
         player.rotatePiece();
-        socket.emit("board", player.getBoard(), player.getCurrentPiece()?.getCurrentState(), player.getScore());
+        emitBoard(socket, player);
     });
 });
 const clientDistPath = path_1.default.join(__dirname, "../../client/dist");

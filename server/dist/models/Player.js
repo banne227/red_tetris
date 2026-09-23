@@ -42,6 +42,9 @@ class Player {
     getIndex() {
         return this.sequenceIndex;
     }
+    setGameOver() {
+        this.game_over = true;
+    }
     incrementIndex() {
         this.sequenceIndex++;
     }
@@ -58,7 +61,7 @@ class Player {
         return linesCleared;
     }
     addPenalityLines(lines) {
-        const new_board = penalty(this.board, lines);
+        const new_board = (0, shared_1.addPenalityLines)(this.board, lines);
         this.board = new_board;
         return new_board;
     }

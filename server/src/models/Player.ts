@@ -23,6 +23,10 @@ class Player {
         return this.id;
     }
 
+    getName(): string {
+        return this.name;
+    }
+
     getCurrentPiece(): Piece | null {
         return this.currentPiece;
     }
@@ -49,6 +53,10 @@ class Player {
 
     getIndex(): number {
         return this.sequenceIndex;
+    }
+
+    setGameOver(): void {
+        this.game_over = true;
     }
 
     incrementIndex(): void {

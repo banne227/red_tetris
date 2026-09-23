@@ -1,4 +1,4 @@
-import { PieceType, generateBag, init_board } from "@red-tetris/shared";
+import { PieceType, generateBag, init_board, checkCollision } from "@red-tetris/shared";
 import { Player } from "./Player";
 import { Piece } from "./Piece";
 
@@ -23,6 +23,10 @@ class Game {
 
     getWinner(): Player | null {
         return this.winner;
+    }
+
+    getState(): "waiting" | "playing" | "finished" {
+        return this.states;
     }
 
     getPieceAt(index:number): PieceType {
@@ -68,6 +72,13 @@ class Game {
     }
 
     checkGameOver(): boolean {
+        if (this.players.length < 2) {
+            if (this.players.length === 1) {
+                return (this.players[0].isGameOver());
+            }
+            return false;
+        }
+
         let player_alive = 0
         for (const player of this.players) {
             if (!player.isGameOver()) {
@@ -90,6 +101,11 @@ class Game {
         const index = player.getIndex()
         const newPieceType = this.getPieceAt(index)
 
+          const newPiece = new Piece(newPieceType, { row: 0, col: 4 }, 0);
+        if (checkCollision(player.getBoard(), newPiece.getCurrentState())) {
+            player.setGameOver();
+            return false;
+        }
         player.updateCurrentPiece(new Piece(newPieceType, { row: 0, col: 4 }, 0));
         player.incrementIndex();
         return true;

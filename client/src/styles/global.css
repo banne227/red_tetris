@@ -140,6 +140,28 @@ body {
   font-weight: 600;
 }
 
+.game-banner {
+  max-width: 480px;
+  margin: 0 auto 16px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.game-banner--eliminated {
+  background: rgba(236, 77, 95, 0.15);
+  border: 1px solid var(--piece-Z);
+  color: var(--piece-Z);
+}
+
+.game-banner--finished {
+  background: rgba(124, 92, 255, 0.15);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .game-content {
   display: flex;
   gap: 24px;

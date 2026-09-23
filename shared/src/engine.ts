@@ -91,7 +91,8 @@ function addPenalityLines(board: Board, lines: number): Board {
     }
 
     for (let i = 0; i < lines; i++) {
-        new_board.unshift(Array(new_board[0].length).fill('X')); // Add a new empty line at the top
+        new_board.shift(); // Remove the top line
+        new_board.push(Array(new_board[0].length).fill('X'));
     }
 
     return new_board;

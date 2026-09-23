@@ -22,6 +22,9 @@ class Game {
     getWinner() {
         return this.winner;
     }
+    getState() {
+        return this.states;
+    }
     getPieceAt(index) {
         if (index < 0) {
             throw new Error("Index cannot be negative");
@@ -59,6 +62,12 @@ class Game {
         this.players = this.players.filter(player => player.getId() !== playerId);
     }
     checkGameOver() {
+        if (this.players.length < 2) {
+            if (this.players.length === 1) {
+                return (this.players[0].isGameOver());
+            }
+            return false;
+        }
         let player_alive = 0;
         for (const player of this.players) {
             if (!player.isGameOver()) {
@@ -79,6 +88,11 @@ class Game {
     getNextPiece(player) {
         const index = player.getIndex();
         const newPieceType = this.getPieceAt(index);
+        const newPiece = new Piece_1.Piece(newPieceType, { row: 0, col: 4 }, 0);
+        if ((0, shared_1.checkCollision)(player.getBoard(), newPiece.getCurrentState())) {
+            player.setGameOver();
+            return false;
+        }
         player.updateCurrentPiece(new Piece_1.Piece(newPieceType, { row: 0, col: 4 }, 0));
         player.incrementIndex();
         return true;

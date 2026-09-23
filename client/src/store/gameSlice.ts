@@ -16,7 +16,8 @@ interface GameState {
 	board: Board | null,
 	currentPiece: Piece | null,
 	isGameOver: boolean,
-	winnerId: string | null
+	winnerId: string | null,
+	eliminated: boolean
 }
 
 const initialState: GameState = {
@@ -29,7 +30,8 @@ const initialState: GameState = {
 	board: null,
 	currentPiece: null,
 	isGameOver: false,
-	winnerId: null	
+	winnerId: null,
+	eliminated: false
 }
 
 const gameSlice = createSlice({
@@ -40,10 +42,11 @@ const gameSlice = createSlice({
       state.status = "playing";
     },
 
-	boardUpdated(state, action: PayloadAction<{ board: Board; currentPiece: Piece | null; score: number }>) {
+	boardUpdated(state, action: PayloadAction<{ board: Board; currentPiece: Piece | null; score: number, isGameOver: boolean }>) {
 		state.board = action.payload.board;
 		state.currentPiece = action.payload.currentPiece;
 		state.score = action.payload.score;
+		state.eliminated = action.payload.isGameOver;
 	},
 
 	spectrumUpdated(state, action: PayloadAction<{ id: string; spectrum: number[] }>) {

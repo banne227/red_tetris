@@ -30,26 +30,20 @@ export function useGameSocket(roomName: string, playerName: string) {
     socketRef.current = socket;
 
     dispatch(joinedRoom({ roomName, playerName }));
-    socket.emit("joinRoom", roomName, playerName);
-
 
     const onKeyDown = (event: KeyboardEvent) => handleKey(event, socketRef, roomName);
     window.addEventListener("keydown", onKeyDown);
 
     socket.on("gameOver", (winnerId: string) => {
-        if (winnerId === socket.id) {
-            alert("You won!");
-        } else {
-            alert("You lost!");
-        }
         dispatch(gameOver({ winnerId }));
     });
 
-    socket.on("board", (board, currentPiece, score: number) => {
-        dispatch(boardUpdated({ board, currentPiece, score }));
+    socket.on("board", (board, currentPiece, score: number, isGameOver: boolean) => {
+        dispatch(boardUpdated({ board, currentPiece, score, isGameOver }));
     });
 
     socket.on("playerJoined", (newPlayerId: string, newPlayerName: string) => {
+        console.log(`Player joined: ${newPlayerName} (ID: ${newPlayerId})`);
         dispatch( playerJoined({ id: newPlayerId, name: newPlayerName }) );
     });
 
@@ -61,6 +55,8 @@ export function useGameSocket(roomName: string, playerName: string) {
         dispatch( spectrumUpdated({ id, spectrum }) );
     });
 
+    socket.emit("joinRoom", roomName, playerName);
+
     return () => {
       socket.disconnect();
       socketRef.current = null;
@@ -68,5 +64,9 @@ export function useGameSocket(roomName: string, playerName: string) {
     };
   }, [roomName, playerName, dispatch]);
 
-  return socketRef;
+    function startGame() {
+        socketRef.current?.emit("startGame", roomName);
+    }
+
+    return { socketRef, startGame };
 }
