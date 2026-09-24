@@ -104,6 +104,10 @@ function createPlayer(id, name = id) {
         player.setGameOver();
         (0, vitest_1.expect)(game.checkGameOver()).toBe(true);
         (0, vitest_1.expect)(game.getWinner()).toBeNull();
+        (0, vitest_1.expect)(game.getState()).toBe("finished");
+        game.rematch();
+        (0, vitest_1.expect)(game.getState()).toBe("waiting");
+        (0, vitest_1.expect)(player.isGameOver()).toBe(false);
     });
     (0, vitest_1.it)("rejects negative sequence indexes", () => {
         const game = new Game_1.Game([], "room-1");

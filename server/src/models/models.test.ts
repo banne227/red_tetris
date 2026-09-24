@@ -127,6 +127,12 @@ describe("Game", () => {
 
     expect(game.checkGameOver()).toBe(true);
     expect(game.getWinner()).toBeNull();
+    expect(game.getState()).toBe("finished");
+
+    game.rematch();
+
+    expect(game.getState()).toBe("waiting");
+    expect(player.isGameOver()).toBe(false);
   });
 
   it("rejects negative sequence indexes", () => {

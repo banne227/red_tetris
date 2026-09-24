@@ -97,7 +97,12 @@ class Game {
     checkGameOver(): boolean {
         if (this.players.length < 2) {
             if (this.players.length === 1) {
-                return (this.players[0].isGameOver());
+                if (this.players[0].isGameOver()) {
+                    this.states = "finished";
+                    this.winner = null;
+                    return true;
+                }
+                return false;
             }
             return false;
         }

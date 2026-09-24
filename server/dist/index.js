@@ -109,7 +109,7 @@ io.on("connection", (socket) => {
                     emitBoard(roomSocket, roomPlayer);
             }
             if (mode === "hard") {
-                startGameLoop(game, roomId, 500);
+                startGameLoop(game, roomId, 250);
             }
             else {
                 startGameLoop(game, roomId, 1000);
