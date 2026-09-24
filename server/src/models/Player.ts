@@ -10,7 +10,7 @@ class Player {
     private score: number = 0;
     private sequenceIndex: number;
     private game_over: boolean = false;
-    private leader: boolean = false;
+    private leader: boolean = false;    
 
     constructor(id: string, name: string, board: Board | null, currentPiece: Piece | null) {
         this.id = id;
@@ -22,6 +22,10 @@ class Player {
 
     getId (): string {
         return this.id;
+    }
+
+    setId(newId: string): void {
+        this.id = newId;
     }
 
     getName(): string {

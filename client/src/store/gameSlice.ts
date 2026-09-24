@@ -4,6 +4,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 interface Player {
 	id: string,
 	name: string,
+	leader: boolean
 }
 
 interface GameState {
@@ -17,7 +18,10 @@ interface GameState {
 	currentPiece: Piece | null,
 	isGameOver: boolean,
 	winnerId: string | null,
-	eliminated: boolean
+	winnerName: string | null,
+	eliminated: boolean,
+	leaderId: string | null,
+	leaderName: string | null,
 }
 
 const initialState: GameState = {
@@ -31,7 +35,10 @@ const initialState: GameState = {
 	currentPiece: null,
 	isGameOver: false,
 	winnerId: null,
-	eliminated: false
+	winnerName: null,
+	eliminated: false,
+	leaderId: null,
+	leaderName: null,
 }
 
 const gameSlice = createSlice({
@@ -57,25 +64,64 @@ const gameSlice = createSlice({
 	);
 	},
 
-	playerJoined(state, action: PayloadAction<{ id: string; name: string }>) {
-		if (!state.opponents.find(opponent => opponent.id === action.payload.id)) {
-			state.opponents.push({ id: action.payload.id, name: action.payload.name, spectrum: [] });
-			state.players.push({ id: action.payload.id, name: action.payload.name });
+	playerJoined(state, action: PayloadAction<{ id: string; name: string, leader: boolean }>) {
+		const existingByName = state.players.find(p => p.name === action.payload.name);
+		if (existingByName) {
+			// update existing player id and leader flag
+			existingByName.id = action.payload.id;
+			existingByName.leader = action.payload.leader;
+			const opp = state.opponents.find(o => o.name === action.payload.name);
+			if (opp) opp.id = action.payload.id;
+		} 
+		else 
+		{
+			if (!state.opponents.find(opponent => opponent.id === action.payload.id)) {
+				state.opponents.push({ id: action.payload.id, name: action.payload.name, spectrum: [0] });
+				state.players.push({ id: action.payload.id, name: action.payload.name, leader: action.payload.leader });
+			}
 		}
 	},
+
+	playerIdUpdated(state, action: PayloadAction<{ oldId: string; newId: string }>) {
+		const { oldId, newId } = action.payload;
+		for (const p of state.players) {
+			if (p.id === oldId) p.id = newId;
+		}
+		for (const o of state.opponents) {
+			if (o.id === oldId) o.id = newId;
+		}
+	},
+
+    LeaderSet(state, action: PayloadAction<{ leaderId: string | null; leaderName: string | null }>) {
+      state.leaderId = action.payload.leaderId;
+      state.leaderName = action.payload.leaderName;
+    },
 
 	joinedRoom(state, action: PayloadAction<{ roomName: string; playerName: string }>) {
 		state.roomName = action.payload.roomName;
 		state.playerName = action.payload.playerName;
 	},
 
-	gameOver(state, action: PayloadAction<{ winnerId: string | null }>) {
+	gameOver(state, action: PayloadAction<{ winnerId: string | null; winnerName?: string | null }>) {
 		state.status = "finished";
 		state.isGameOver = true;
 		state.winnerId = action.payload.winnerId;
-	}
-  },
+		state.winnerName = action.payload.winnerName ?? null;
+	},
+
+	gameReset(state) {
+		state.status = "waiting";
+		state.score = 0;
+		state.board = null;
+		state.currentPiece = null;
+		state.isGameOver = false;
+		state.winnerId = null;
+		state.winnerName = null;
+		state.eliminated = false;
+		state.opponents = state.opponents.map(opponent => ({ ...opponent, spectrum: [] }));
+	},
+},
 });
 
-export const { gameStarted, boardUpdated, spectrumUpdated, playerJoined, joinedRoom, gameOver } = gameSlice.actions;
+export const { gameStarted, boardUpdated, spectrumUpdated, playerJoined, joinedRoom, gameOver, gameReset, LeaderSet, playerIdUpdated } = gameSlice.actions;
 export default gameSlice.reducer;

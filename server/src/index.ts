@@ -37,7 +37,7 @@ function startGameLoop(game: Game, roomId: string) {
             socket?.emit("board", player.getBoard(), player.getCurrentPiece()?.getCurrentState(), player.getScore(), player.isGameOver())
         }
         if (game.checkGameOver()) {
-            io.to(roomId).emit("gameOver", game.getWinner()?.getId());
+            io.to(roomId).emit("gameOver", game.getWinner()?.getId(), game.getWinner()?.getName());
             clearInterval(interval); // stop the interval when the game is over
         }
     }, timer)
@@ -75,13 +75,30 @@ io.on("connection", (socket) => {
         }
         const existingPlayers = game.getPlayers();
         for (const existingPlayer of existingPlayers) {
-            socket.emit("playerJoined", existingPlayer.getId(), existingPlayer.getName());
+            socket.emit("playerJoined", existingPlayer.getId(), existingPlayer.getName(), existingPlayer.isLeader());
             socket.emit("spectrum", existingPlayer.getId(), computeSpectrum(existingPlayer.getBoard()));
         }
+
+        //reconnection 
+        const existingByName = game.getPlayers().find(p => p.getName() === playerName);
+        if (existingByName) {
+            const oldId = existingByName.getId();
+            existingByName.setId(socket.id);
+            const currentLeader = game.getPlayers().find(p => p.isLeader());
+            socket.emit("setLeader", currentLeader ? currentLeader.getId() : null, currentLeader ? currentLeader.getName() : null);
+            socket.join(roomId);
+            io.to(roomId).emit("playerIdUpdated", oldId, socket.id);
+            socket.emit("spectrum", existingByName.getId(), computeSpectrum(existingByName.getBoard()));
+            console.log(`${playerName} reconnected to room ${roomId} (old id: ${oldId})`);
+            return;
+        }
+
         const player = new Player(socket.id, playerName, null, null);
         game.addPlayer(player);
+        const currentLeader = game.getPlayers().find(p => p.isLeader());
+        socket.emit("setLeader", currentLeader ? currentLeader.getId() : null, currentLeader ? currentLeader.getName() : null);
         socket.join(roomId);
-        socket.to(roomId).emit("playerJoined", socket.id, playerName);
+        socket.to(roomId).emit("playerJoined", socket.id, playerName, player.isLeader());
         console.log(`${playerName} joined room ${roomId}`);
     });
 
@@ -131,9 +148,29 @@ io.on("connection", (socket) => {
         const game = rooms.get(roomId);
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
-        if (game?.getState() !== "finished" || !player) return
+        if (game?.getState() !== "finished" || !player || !players) return
+
         game?.rematch()
-        emitBoard(socket, player)
+
+        for (const p of players) {
+            const playerSocket = io.sockets.sockets.get(p.getId());
+            playerSocket?.emit("gameReset");
+            emitBoard(playerSocket, p)
+        }
+    })
+
+    socket.on("transferLeader", (roomId:string, targetId:string) => {
+        const game = rooms.get(roomId);
+        const players = game?.getPlayers();
+        const player = players?.find(p => p.getId() === socket.id);
+        const targetPlayer = players?.find(p => p.getId() === targetId);
+        if (!game || !player || !targetPlayer) return
+        if (!player.isLeader()) return
+
+        player.setLeader(false)
+        targetPlayer.setLeader(true)
+
+        io.to(roomId).emit("setLeader", targetPlayer.getId(), targetPlayer.getName());
     })
 }
 );

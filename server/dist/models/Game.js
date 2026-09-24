@@ -25,6 +25,9 @@ class Game {
     getState() {
         return this.states;
     }
+    getPlayerById(id) {
+        return this.players.find(player => player.getId() === id);
+    }
     getPieceAt(index) {
         if (index < 0) {
             throw new Error("Index cannot be negative");
@@ -70,7 +73,14 @@ class Game {
         }
     }
     removePlayer(playerId) {
+        let wasLeader = false;
+        if (this.getPlayerById(playerId)?.isLeader()) {
+            wasLeader = true;
+        }
         this.players = this.players.filter(player => player.getId() !== playerId);
+        if (wasLeader && this.players.length > 0) {
+            this.players[0].setLeader(true);
+        }
     }
     checkGameOver() {
         if (this.players.length < 2) {

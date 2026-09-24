@@ -24,8 +24,8 @@ describe("game reducer", () => {
   });
 
   it("tracks joined players without duplicates", () => {
-    const first = reducer(state(), playerJoined({ id: "p1", name: "Alice" }));
-    const second = reducer(first, playerJoined({ id: "p1", name: "Alice" }));
+    const first = reducer(state(), playerJoined({ id: "p1", name: "Alice", leader: true }));
+    const second = reducer(first, playerJoined({ id: "p1", name: "Alice", leader: true }));
 
     expect(second.players).toEqual([{ id: "p1", name: "Alice" }]);
     expect(second.opponents).toEqual([{ id: "p1", name: "Alice", spectrum: [] }]);
@@ -46,8 +46,8 @@ describe("game reducer", () => {
   });
 
   it("updates only the matching opponent spectrum", () => {
-    let current = reducer(state(), playerJoined({ id: "p1", name: "Alice" }));
-    current = reducer(current, playerJoined({ id: "p2", name: "Bob" }));
+    let current = reducer(state(), playerJoined({ id: "p1", name: "Alice", leader: true }));
+    current = reducer(current, playerJoined({ id: "p2", name: "Bob", leader: true }));
     const result = reducer(current, spectrumUpdated({ id: "p2", spectrum: [1, 2, 3] }));
 
     expect(result.opponents[0].spectrum).toEqual([]);
@@ -59,11 +59,12 @@ describe("game reducer", () => {
       state(),
       boardUpdated({ board, currentPiece: null, score: 0, isGameOver: true })
     );
-    const finished = reducer(eliminated, gameOver({ winnerId: "p2" }));
+    const finished = reducer(eliminated, gameOver({ winnerId: "p2", winnerName: "Bob" }));
 
     expect(finished.eliminated).toBe(true);
     expect(finished.isGameOver).toBe(true);
     expect(finished.status).toBe("finished");
     expect(finished.winnerId).toBe("p2");
+    expect(finished.winnerName).toBe("Bob");
   });
 });

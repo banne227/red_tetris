@@ -22,6 +22,9 @@ class Player {
     getId() {
         return this.id;
     }
+    setId(newId) {
+        this.id = newId;
+    }
     getName() {
         return this.name;
     }

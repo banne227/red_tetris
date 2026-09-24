@@ -17,6 +17,15 @@
   --piece-Z: #ec4d5f;
   --piece-J: #4d6bec;
   --piece-L: #ec9a4d;
+  --piece-X: repeating-linear-gradient(45deg, #555, #555 4px, #3a3a3a 4px, #3a3a3a 8px);
+}
+
+.piece-X {
+  background: repeating-linear-gradient(
+    45deg,
+    #555, #555 4px,
+    #3a3a3a 4px, #3a3a3a 8px
+  );
 }
 
 body {
@@ -204,6 +213,35 @@ body {
   color: var(--text-dim);
 }
 
+.leader-badge {
+  font-size: 0.8rem;
+  color: var(--piece-O);
+  font-weight: 600;
+}
+
+.waiting-player-item {
+  justify-content: space-between;
+}
+
+.waiting-player-name {
+  flex: 1;
+}
+
+.transfer-leader-btn {
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.transfer-leader-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ---------- GamePage ---------- */
 
 .game-page {
@@ -256,10 +294,29 @@ body {
 }
 
 .game-banner--finished {
-  background: rgba(124, 92, 255, 0.15);
-  border: 1px solid var(--accent);
-  color: var(--accent);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.game-banner-text {
+  margin: 0;
+}
+
+.rematch-btn {
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background: var(--accent);
+  color: white;
+  font-size: 0.9rem;
   font-weight: 600;
+  cursor: pointer;
+}
+
+.rematch-btn:hover {
+  filter: brightness(1.1);
 }
 
 .game-content {
@@ -306,6 +363,7 @@ body {
 .piece-Z { background: var(--piece-Z); }
 .piece-J { background: var(--piece-J); }
 .piece-L { background: var(--piece-L); }
+.piece-X { background: var(--piece-X); }
 
 .board-grid--over .board-cell {
   filter: grayscale(1) brightness(0.5);
@@ -365,6 +423,19 @@ body {
   background: var(--accent);
   border-radius: 1px 1px 0 0;
   min-height: 1px;
+}
+
+.game-highscore {
+  margin: 2px 0 0;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+}
+
+.waiting-highscore {
+  margin: 0 0 20px;
+  font-size: 0.85rem;
+  color: var(--piece-O);
+  font-weight: 600;
 }
 
 /* ---------- Responsive ---------- */
