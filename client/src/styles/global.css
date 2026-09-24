@@ -207,6 +207,19 @@ body {
   filter: brightness(1.1);
 }
 
+.waiting-start-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.waiting-start-buttons .waiting-start-btn {
+  flex: 1;
+}
+
+.waiting-start-btn--hard {
+  background: var(--piece-Z);
+}
+
 .waiting-hint {
   margin: 10px 0 0;
   font-size: 0.75rem;

@@ -24,8 +24,7 @@ function onPieceLocked(socket, game, player, roomId) {
     socket?.to(roomId).emit("spectrum", socket.id, (0, shared_1.computeSpectrum)(player.getBoard()));
     game.getNextPiece(player);
 }
-function startGameLoop(game, roomId) {
-    let timer = 1000;
+function startGameLoop(game, roomId, timer = 1000) {
     const interval = setInterval(() => {
         const players = game.getPlayers();
         for (const player of players) {
@@ -97,7 +96,7 @@ io.on("connection", (socket) => {
         socket.to(roomId).emit("playerJoined", socket.id, playerName, player.isLeader());
         console.log(`${playerName} joined room ${roomId}`);
     });
-    socket.on("startGame", (roomId) => {
+    socket.on("startGame", (roomId, mode) => {
         const game = rooms.get(roomId);
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
@@ -109,7 +108,12 @@ io.on("connection", (socket) => {
                 if (roomSocket)
                     emitBoard(roomSocket, roomPlayer);
             }
-            startGameLoop(game, roomId);
+            if (mode === "hard") {
+                startGameLoop(game, roomId, 500);
+            }
+            else {
+                startGameLoop(game, roomId, 1000);
+            }
         }
     });
     socket.on("move", (roomId, dir) => {

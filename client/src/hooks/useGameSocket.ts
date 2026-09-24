@@ -81,8 +81,8 @@ export function useGameSocket(roomName: string, playerName: string) {
     };
   }, [roomName, playerName, dispatch]);
 
-    function startGame() {
-        socketRef.current?.emit("startGame", roomName);
+    function startGame(mode: "classic" | "hard" = "classic") {
+        socketRef.current?.emit("startGame", roomName, mode);
     }
 
     return { socketRef, startGame };

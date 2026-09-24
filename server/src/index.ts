@@ -23,8 +23,7 @@ function onPieceLocked(socket: any, game: Game, player: Player, roomId: string) 
     game.getNextPiece(player)
 }
 
-function startGameLoop(game: Game, roomId: string) {
-    let timer = 1000
+function startGameLoop(game: Game, roomId: string, timer: number = 1000) {
     const interval = setInterval(() => {
         const players = game.getPlayers();
         for (const player of players) {
@@ -102,7 +101,7 @@ io.on("connection", (socket) => {
         console.log(`${playerName} joined room ${roomId}`);
     });
 
-    socket.on("startGame", (roomId: string) => {
+    socket.on("startGame", (roomId: string, mode: "classic" | "hard") => {
         const game = rooms.get(roomId);
         const players = game?.getPlayers();
         const player = players?.find(p => p.getId() === socket.id);
@@ -113,7 +112,12 @@ io.on("connection", (socket) => {
                 const roomSocket = io.sockets.sockets.get(roomPlayer.getId());
                 if (roomSocket) emitBoard(roomSocket, roomPlayer);
             }
-            startGameLoop(game, roomId);
+            if (mode === "hard") {
+                startGameLoop(game, roomId, 250);
+            } 
+            else {
+                startGameLoop(game, roomId, 1000);
+            }
         }
     });
 

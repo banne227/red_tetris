@@ -95,9 +95,14 @@ export default function GamePage() {
             </ul>
           </div>
 
-          <button className="waiting-start-btn" onClick={handleStart}>
-            Lancer la partie
-          </button>
+          <div className="waiting-start-buttons">
+            <button className="waiting-start-btn" onClick={() => startGame("classic")}>
+              Lancer (normal)
+            </button>
+            <button className="waiting-start-btn waiting-start-btn--hard" onClick={() => startGame("hard")}>
+              Lancer (hard)
+            </button>
+          </div>
           <p className="waiting-hint">
             {leaderName ? `${leaderName} peut démarrer la partie.` : "En attente du leader pour démarrer."}
           </p>
